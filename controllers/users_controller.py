@@ -4,15 +4,16 @@
 
 from flask import jsonify, request, Response
 
+from decorators.user_repository import get_user_repository
 from repositories.factories import create_users_repository
-from repositories.users_sqlite_repository import UsersSQLiteRepository
 
 
-def get_all_users_handler():
+@get_user_repository
+def get_all_users_handler(repo):
     try:
         # tämä on muuttunut
         # nyt käytetään repository patternin kanssa yhdessä factory patternia
-        repo = create_users_repository()
+        #repo = create_users_repository()
         users = repo.all()
         users_list = []
         for user in users:
@@ -23,11 +24,12 @@ def get_all_users_handler():
         return jsonify({'error': str(e)}), 500
 
 
-def get_user_by_id_handler(user_id):
+@get_user_repository
+def get_user_by_id_handler(repo, user_id):
     try:
         # tämä on muuttunut
         # nyt käytetään repository patternin kanssa yhdessä factory patternia
-        repo = create_users_repository()
+        # repo = create_users_repository()
         user = repo.get_by_id(user_id)
         if user is None:
             return jsonify({'error': 'user not found'}), 404
@@ -36,8 +38,8 @@ def get_user_by_id_handler(user_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-def add_user_handler():
+@get_user_repository
+def add_user_handler(repo):
     """
         routehandler lisää uuden käyttäjän tietokantaan
         1. otetaan vastaan request body
@@ -50,7 +52,7 @@ def add_user_handler():
     try:
         # tämä on muuttunut
         # nyt käytetään repository patternin kanssa yhdessä factory patternia
-        repo = create_users_repository()
+        #repo = create_users_repository()
         request_data = request.get_json()
         username = request_data.get('username', None)
         first_name = request_data.get('first_name', None)
@@ -65,12 +67,12 @@ def add_user_handler():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-def update_user_handler(user_id):
+@get_user_repository
+def update_user_handler(repo, user_id):
     try:
         # tämä on muuttunut
         # nyt käytetään repository patternin kanssa yhdessä factory patternia
-        repo = create_users_repository()
+        # repo = create_users_repository()
 
         request_data = request.get_json()
         username = request_data.get('username', None)
@@ -88,11 +90,12 @@ def update_user_handler(user_id):
         return jsonify({'error': str(e)}), 500
 
 
-def remove_user_handler(user_id):
+@get_user_repository
+def remove_user_handler(repo, user_id):
     try:
         # tämä on muuttunut
         # nyt käytetään repository patternin kanssa yhdessä factory patternia
-        repo = create_users_repository()
+        # repo = create_users_repository()
         removed = repo.remove_by_id(user_id)
         if not removed:
             return jsonify({'error': 'error removing user'}), 400
