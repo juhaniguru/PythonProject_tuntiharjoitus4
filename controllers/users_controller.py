@@ -4,11 +4,11 @@
 
 from flask import jsonify, request, Response
 
-from decorators.user_repository import get_user_repository
+from decorators.user_repository import get_user_repository, get_repository
 from repositories.factories import create_users_repository
 
 
-@get_user_repository
+@get_repository('user')
 def get_all_users_handler(repo):
     try:
         # tämä on muuttunut
